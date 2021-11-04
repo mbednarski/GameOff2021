@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class InstructionPrefabScript : MonoBehaviour
 {
     [SerializeField] TMP_InputField tmpInputField;
+    [SerializeField] TextMeshProUGUI tmpLineNumber;
 
     public UnityEvent<int, string> onInstructionChanged;
 
@@ -15,6 +16,7 @@ public class InstructionPrefabScript : MonoBehaviour
     {
         tmpInputField = GetComponentInChildren<TMP_InputField>();
         tmpInputField.onEndEdit.AddListener(ValueChanged);
+        
     }
 
     void ValueChanged(string val)
@@ -24,9 +26,10 @@ public class InstructionPrefabScript : MonoBehaviour
         }
     }
 
-    public void SetLineText(string line)
+    public void SetLineText(int lineNumber, string line)
     {
         tmpInputField.text = line;
+        tmpLineNumber.text = lineNumber.ToString();
     }
     public void SetEditable(bool editable)
     {

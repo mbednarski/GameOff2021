@@ -46,7 +46,7 @@ public class CodeEditor : MonoBehaviour
             line.GetComponent<RectTransform>().localPosition = basePos + i * offset;
 
             var x = line.GetComponent<InstructionPrefabScript>();
-            x.SetLineText(program.instructions[i].ToString());
+            x.SetLineText(i, program.instructions[i].ToString());
             x.SetEditable(program.instructions[i].editable);
             x.InstructionNumber = i;
             x.onInstructionChanged.AddListener(OnInstructionChanged);
