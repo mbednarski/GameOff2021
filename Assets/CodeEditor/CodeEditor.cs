@@ -32,7 +32,7 @@ public class CodeEditor : MonoBehaviour
 
     void FillEditor()
     {
-        Vector3 basePos = new Vector3(-250,200,0);
+        Vector3 basePos = new Vector3(0,200,0);
         Vector3 offset = new Vector3(0,-instructionOffset,0);
 
         program.EnsureProgramIsLoaded();
