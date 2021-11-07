@@ -9,12 +9,70 @@ public class CodeEditor : MonoBehaviour
     [SerializeField] AssemblyProgram program;
     [SerializeField] GameObject instructionPrefab;
 
+    [SerializeField] GameObject ipuGameObject;
+
+    IntelligenceProcesingUnit ipu;
+
+    [SerializeField] GameObject instructionArrow;
+    RectTransform arrowTransform;
+
+
     [SerializeField] float instructionOffset = 1f;
 
     private List<UnityEvent<int, string>> eventsToDispose = new List<UnityEvent<int,string>>();
 
+    [SerializeField] GameObject listingParent;
+
+    [SerializeField] Vector3 basePos = new Vector3(0,200,0);
+    Vector3 arrowBasePos = new Vector3(-170,200,0);
+    Vector3 offset;
 
     bool reloading = false;
+
+    void Awake()
+    {
+        offset = new Vector3(0,-instructionOffset,0);
+        Debug.Assert(listingParent != null);
+        ipu = ipuGameObject.GetComponent<IntelligenceProcesingUnit>();
+        ipu.onStepExecuted += IpuStepExecuted;  
+        ipu.onStateChanged += IpuStateChanged;        
+
+        arrowTransform = instructionArrow.GetComponent<RectTransform>();
+        Debug.Assert(arrowTransform != null);
+
+    }
+    
+    void Start()
+    {
+        
+        Clear();
+        FillEditor();   
+        SetArrowPosition(0);
+    }
+
+    void IpuStateChanged(IntelligenceProcesingUnit.State state)
+    {
+        switch (state)
+        {
+            case IntelligenceProcesingUnit.State.IDLE:
+                SetArrowVisibility(false);
+                break;
+            case IntelligenceProcesingUnit.State.DONE:
+                SetArrowVisibility(false);
+                break;
+            case IntelligenceProcesingUnit.State.RUN:
+                SetArrowVisibility(true);
+                break;
+            case IntelligenceProcesingUnit.State.STEP:
+                SetArrowVisibility(true);
+                break;
+        }
+    }
+
+    private void SetArrowVisibility(bool visibility)
+    {
+        instructionArrow.SetActive(visibility);
+    }
 
     void Clear()
     {
@@ -24,22 +82,20 @@ public class CodeEditor : MonoBehaviour
         }
         eventsToDispose.Clear();
 
-        while(transform.childCount > 0)
+        while(listingParent.transform.childCount > 0)
         {
-            DestroyImmediate(transform.GetChild(0).gameObject);
+            DestroyImmediate(listingParent.transform.GetChild(0).gameObject);
         }
     }
 
     void FillEditor()
     {
-        Vector3 basePos = new Vector3(0,200,0);
-        Vector3 offset = new Vector3(0,-instructionOffset,0);
 
         program.EnsureProgramIsLoaded();
         for (int i = 0; i < program.instructions.Count; i++)
         {
             var line = Instantiate(instructionPrefab);
-            line.transform.SetParent(gameObject.transform);
+            line.transform.SetParent(listingParent.transform);
             line.transform.localScale = Vector3.one;
 
             Debug.Log(line.GetComponent<RectTransform>().localPosition);
@@ -54,10 +110,15 @@ public class CodeEditor : MonoBehaviour
         }
     }
 
-    void Start()
+    void SetArrowPosition(int ip)
     {
-        Clear();
-        FillEditor();   
+        arrowTransform.localPosition = arrowBasePos + ip * offset;
+    }
+
+    void IpuStepExecuted()
+    {
+        var ip = ipu.registers["IP"];
+        SetArrowPosition(ip);
     }
 
 
