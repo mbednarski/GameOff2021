@@ -97,7 +97,7 @@ public class IntelligenceProcesingUnit : MonoBehaviour {
     }
 
 
-    private void ExecuteInstruction(GenericInstruction instruction)
+    private void ExecuteInstruction(Instruction instruction)
     {
         Debug.Log($"Executing {instruction}");
     }

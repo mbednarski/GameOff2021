@@ -123,7 +123,7 @@ public class CodeEditor : MonoBehaviour
 
 
     void OnInstructionChanged(int idx, string newInstruction){
-        var parsed = GenericInstruction.Parse(newInstruction);
+        var parsed = Instruction.Parse(newInstruction);
         program.instructions[idx] = parsed;
         Debug.Log(program.instructions);
         Clear();
