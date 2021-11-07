@@ -11,6 +11,8 @@ public class CodeEditor : MonoBehaviour
     [SerializeField] GameObject ipuGameObject;
     IntelligenceProcesingUnit ipu;
     [SerializeField] GameObject instructionArrow;
+
+    [SerializeField] TerminalOutput terminalOutput;
     RectTransform arrowTransform;
     [SerializeField] float instructionOffset = 1f;
     private List<UnityEvent<int, string>> eventsToDispose = new List<UnityEvent<int,string>>();
@@ -33,6 +35,8 @@ public class CodeEditor : MonoBehaviour
         Debug.Assert(arrowTransform != null);
 
         instructionParser = new InstructionParser();
+
+        Debug.Assert(terminalOutput != null);
     }
     
     void Start()
@@ -111,12 +115,17 @@ public class CodeEditor : MonoBehaviour
         SetArrowPosition(ip);
     }
 
+    void PrintErrorMessage(int line, string error)
+    {
+        var msg = $"Error at line: {line}: {error}";
+        terminalOutput.Println(msg);
+    }
 
     void OnInstructionChanged(int idx, string newInstruction){
         var (instruction, error) = instructionParser.Parse(newInstruction);
         if(error != null)
         {
-            // handle error somehow
+            PrintErrorMessage(idx, error.ToString());
         }
         else
         {
