@@ -8,26 +8,18 @@ public class CodeEditor : MonoBehaviour
 {
     [SerializeField] AssemblyProgram program;
     [SerializeField] GameObject instructionPrefab;
-
     [SerializeField] GameObject ipuGameObject;
-
     IntelligenceProcesingUnit ipu;
-
     [SerializeField] GameObject instructionArrow;
     RectTransform arrowTransform;
-
-
     [SerializeField] float instructionOffset = 1f;
-
     private List<UnityEvent<int, string>> eventsToDispose = new List<UnityEvent<int,string>>();
-
     [SerializeField] GameObject listingParent;
-
     [SerializeField] Vector3 basePos = new Vector3(0,200,0);
     Vector3 arrowBasePos = new Vector3(-170,200,0);
     Vector3 offset;
+    InstructionParser instructionParser;
 
-    bool reloading = false;
 
     void Awake()
     {
@@ -40,14 +32,13 @@ public class CodeEditor : MonoBehaviour
         arrowTransform = instructionArrow.GetComponent<RectTransform>();
         Debug.Assert(arrowTransform != null);
 
+        instructionParser = new InstructionParser();
     }
     
     void Start()
     {
-        
         Clear();
         FillEditor();   
-        SetArrowPosition(0);
     }
 
     void IpuStateChanged(IntelligenceProcesingUnit.State state)
@@ -55,7 +46,8 @@ public class CodeEditor : MonoBehaviour
         switch (state)
         {
             case IntelligenceProcesingUnit.State.IDLE:
-                SetArrowVisibility(false);
+                SetArrowVisibility(false);                
+                SetArrowPosition(0);
                 break;
             case IntelligenceProcesingUnit.State.DONE:
                 SetArrowVisibility(false);
@@ -90,7 +82,6 @@ public class CodeEditor : MonoBehaviour
 
     void FillEditor()
     {
-
         program.EnsureProgramIsLoaded();
         for (int i = 0; i < program.instructions.Count; i++)
         {
@@ -98,7 +89,6 @@ public class CodeEditor : MonoBehaviour
             line.transform.SetParent(listingParent.transform);
             line.transform.localScale = Vector3.one;
 
-            Debug.Log(line.GetComponent<RectTransform>().localPosition);
             line.GetComponent<RectTransform>().localPosition = basePos + i * offset;
 
             var x = line.GetComponent<InstructionPrefabScript>();
@@ -123,11 +113,25 @@ public class CodeEditor : MonoBehaviour
 
 
     void OnInstructionChanged(int idx, string newInstruction){
-        var parsed = Instruction.Parse(newInstruction);
-        program.instructions[idx] = parsed;
-        Debug.Log(program.instructions);
-        Clear();
-        FillEditor();
+        var (instruction, error) = instructionParser.Parse(newInstruction);
+        if(error != null)
+        {
+            // handle error somehow
+        }
+        else
+        {
+            instruction.editable = true;
+            program.instructions[idx] = instruction;
+
+            StartCoroutine(ReloadEditorCoroutine());
+        }
+
+        IEnumerator ReloadEditorCoroutine()
+        {
+            yield return null;
+            Clear();
+            FillEditor();
+        }
     }
 
     // Update is called once per frame

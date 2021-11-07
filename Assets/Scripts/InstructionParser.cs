@@ -62,7 +62,7 @@ public class InstructionParser
 
     private bool IsValidRegistry(string token)
     {
-        return Array.IndexOf(allowedRegisters, token) != -1;
+        return Array.IndexOf(allowedRegisters, token.ToUpper()) != -1;
     }
 
     private bool IsValidNumber(string token)
@@ -126,7 +126,7 @@ public class InstructionParser
        if(!reg1)
        {
            return (null, new InstructionParseError(
-            $"First operand must be a registry. >{reg1}< is not a valid registry name!"
+            $"First operand must be a registry. >{op1}< is not a valid registry name!"
         ));
        }
 
