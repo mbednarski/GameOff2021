@@ -33,7 +33,7 @@ public class InstructionPrefabScript : MonoBehaviour
     }
     public void SetEditable(bool editable)
     {
-        tmpInputField.enabled = editable;
+        tmpInputField.interactable = editable;
     }
 
     private void OnDestroy() {

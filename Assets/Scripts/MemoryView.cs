@@ -7,6 +7,7 @@ using TMPro;
 public class MemoryView : MonoBehaviour
 {
     [SerializeField] GameObject ipuGameObject;
+    [SerializeField] GameObject registersContainer;
     IntelligenceProcesingUnit ipu;
 
     TextMeshProUGUI regAX, regBX, regCX, regDX, regIP;
@@ -23,11 +24,11 @@ public class MemoryView : MonoBehaviour
         ipu = ipuGameObject.GetComponent<IntelligenceProcesingUnit>();
         ipu.onStepExecuted += IpuStepExecuted;
 
-        registers["AX"] = transform.Find("AXText").gameObject.GetComponent<TextMeshProUGUI>();
-        registers["BX"] = transform.Find("BXText").gameObject.GetComponent<TextMeshProUGUI>();
-        registers["CX"] = transform.Find("CXText").gameObject.GetComponent<TextMeshProUGUI>();
-        registers["DX"] = transform.Find("DXText").gameObject.GetComponent<TextMeshProUGUI>();
-        registers["IP"] = transform.Find("IPText").gameObject.GetComponent<TextMeshProUGUI>();
+        registers["AX"] = registersContainer.gameObject.transform.Find("AXText").gameObject.GetComponent<TextMeshProUGUI>();
+        registers["BX"] = registersContainer.gameObject.transform.Find("BXText").gameObject.GetComponent<TextMeshProUGUI>();
+        registers["CX"] = registersContainer.gameObject.transform.Find("CXText").gameObject.GetComponent<TextMeshProUGUI>();
+        registers["DX"] = registersContainer.gameObject.transform.Find("DXText").gameObject.GetComponent<TextMeshProUGUI>();
+        registers["IP"] = registersContainer.gameObject.transform.Find("IPText").gameObject.GetComponent<TextMeshProUGUI>();
 
         RefreshRegisterValues();
     }
@@ -41,7 +42,7 @@ public class MemoryView : MonoBehaviour
     {
         foreach (var registerName in registers.Keys)
         {
-            registers[registerName].text = ipu.registers[registerName].ToString();
+            registers[registerName].text = $"{registerName}: {ipu.registers[registerName].ToString()}";
         }
     }
 

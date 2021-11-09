@@ -14,11 +14,11 @@ public class CodeEditor : MonoBehaviour
 
     [SerializeField] TerminalOutput terminalOutput;
     RectTransform arrowTransform;
-    [SerializeField] float instructionOffset = 1f;
+    [SerializeField] float instructionOffset = 2f;
     private List<UnityEvent<int, string>> eventsToDispose = new List<UnityEvent<int,string>>();
     [SerializeField] GameObject listingParent;
-    [SerializeField] Vector3 basePos = new Vector3(0,200,0);
-    Vector3 arrowBasePos = new Vector3(-170,200,0);
+    [SerializeField] Vector3 basePos = new Vector3(-100,0,0);
+    Vector3 arrowBasePos = new Vector3(-0,0,0);
     Vector3 offset;
     InstructionParser instructionParser;
 
