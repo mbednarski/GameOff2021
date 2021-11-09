@@ -1,0 +1,6 @@
+Instructions/bin
+Instructions/obj
+Instructions.Tests/bin
+Instructions.Tests/obj
+!*.sln
+!*.csproj
